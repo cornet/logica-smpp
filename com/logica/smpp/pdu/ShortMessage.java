@@ -11,7 +11,9 @@
 package com.logica.smpp.pdu;
 
 import java.io.UnsupportedEncodingException;
-import sun.io.CharToByteConverter;
+//import sun.io.CharToByteConverter;
+import java.nio.charset.Charset;
+import java.nio.charset.IllegalCharsetNameException;
 
 import com.logica.smpp.Data;
 import com.logica.smpp.util.ByteBuffer;
@@ -254,10 +256,13 @@ public class ShortMessage extends ByteData
     {
         boolean supported = true;
         try {
-            CharToByteConverter.getConverter(encoding);
-        } catch (UnsupportedEncodingException e) {
+        	supported = Charset.isSupported(encoding);
+        } catch (IllegalCharsetNameException e) {
             supported = false;
+        } catch (IllegalArgumentException e) {
+            supported = false;	
         }
+        
         return supported;
     }
 
