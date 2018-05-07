@@ -11,7 +11,9 @@
     <javac classpathref="classpath"
 	   srcdir="."
 	   destdir="build/classes"
-	   includeantruntime="false"/>
+	   includeantruntime="true"
+	   debug="true"
+	   debuglevel="lines,vars,source"/>
   </target>
 
   <target name="jar" depends="compile">
