@@ -190,20 +190,32 @@ public abstract class ProcessingThread extends SmppObject implements Runnable
     public void run()
     {
         debug.enter(DUTL,this,"run()");
-        try {
-            setProcessingStatus(PROC_RECEIVING);
-            while (keepProcessing) {
-                process();
-                Thread.yield();
+        setProcessingStatus(PROC_RECEIVING);
+        while (keepProcessing) {
+        	try
+        	{
+        		process();
+                Thread.sleep(10);	
+        	}
+            catch (InterruptedException e) 
+        	{
+                setTermException(e);
+                debug.write("ProcessingThread.run() with name: " + Thread.currentThread().getName() + ", caught Interrupted exception "+e);
+                event.write(e,"ProcessingThread.run() Interrupted exception, Thread name: " + Thread.currentThread().getName());
+                this.keepProcessing = false;
             }
-        } catch (Exception e) {
-            setTermException(e);
-            debug.write("ProcessingThread.run() caught unhadled exception "+e);
-            event.write(e,"ProcessingThread.run() unhadled exception");
-        } finally {
-            setProcessingStatus(PROC_FINISHED);
-            debug.exit(DUTL,this);
+            catch (Exception e) 
+        	{
+                setTermException(e);
+                debug.write("ProcessingThread.run() caught unhadled exception "+e);
+                event.write(e,"ProcessingThread.run() unhadled exception");
+                this.keepProcessing = false;
+            }
+
         }
+        setProcessingStatus(PROC_FINISHED);
+        debug.exit(DUTL,this);
+        return;
     }
 
     /**
