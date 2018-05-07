@@ -191,7 +191,6 @@ public abstract class ProcessingThread extends SmppObject implements Runnable
     {
         debug.enter(DUTL,this,"run()");
         setProcessingStatus(PROC_RECEIVING);
-        /* keepProcessing is anyway set to true */
         while (keepProcessing) {
         	try
         	{
@@ -203,20 +202,20 @@ public abstract class ProcessingThread extends SmppObject implements Runnable
                 setTermException(e);
                 debug.write("ProcessingThread.run() with name: " + Thread.currentThread().getName() + ", caught Interrupted exception "+e);
                 event.write(e,"ProcessingThread.run() Interrupted exception, Thread name: " + Thread.currentThread().getName());
+                this.keepProcessing = false;
             }
             catch (Exception e) 
         	{
                 setTermException(e);
                 debug.write("ProcessingThread.run() caught unhadled exception "+e);
                 event.write(e,"ProcessingThread.run() unhadled exception");
+                this.keepProcessing = false;
             }
-        	finally
-        	{
-                setProcessingStatus(PROC_FINISHED);
-                debug.exit(DUTL,this);
-                return;
-            }
+
         }
+        setProcessingStatus(PROC_FINISHED);
+        debug.exit(DUTL,this);
+        return;
     }
 
     /**
