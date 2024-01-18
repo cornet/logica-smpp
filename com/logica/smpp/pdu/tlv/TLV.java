@@ -188,7 +188,7 @@ public abstract class TLV extends ByteData
         if (hasValue()) {
             ByteBuffer tlvBuf = new ByteBuffer();
             tlvBuf.appendShort(getTag());
-            tlvBuf.appendShort(encodeUnsigned(getLength()));
+            tlvBuf.appendShort((short) getLength());
             tlvBuf.appendBuffer(getValueData());
             return tlvBuf;
         } else {
